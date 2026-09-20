@@ -1,0 +1,16 @@
+{
+  "name": "intzar-portfolio",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Cinematic Personal Portfolio for Intzar Ali",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "concurrently \"npm --prefix backend run dev\" \"npm --prefix frontend run dev\"",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "dev:backend": "npm --prefix backend run dev",
+    "build": "npm --prefix frontend run build"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  }
+}

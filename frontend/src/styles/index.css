@@ -1,0 +1,194 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+  font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+}
+
+body {
+  background-color: #07090e;
+  color: #f1f5f9;
+  overflow-x: hidden;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #07090e;
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 242, 254, 0.2);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #334155;
+}
+
+/* Glassmorphism Components */
+.glass-nav {
+  background: rgba(7, 9, 14, 0.75);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: rgba(17, 23, 34, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(0, 242, 254, 0.3);
+  box-shadow: 0 12px 40px 0 rgba(0, 242, 254, 0.12);
+}
+
+.glass-card-glow-purple:hover {
+  border-color: rgba(168, 85, 247, 0.4);
+  box-shadow: 0 12px 40px 0 rgba(168, 85, 247, 0.15);
+}
+
+.glass-card-glow-cyan:hover {
+  border-color: rgba(0, 242, 254, 0.4);
+  box-shadow: 0 12px 40px 0 rgba(0, 242, 254, 0.15);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.04);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Gradients */
+.gradient-text-cyan {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-purple {
+  background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-rainbow {
+  background: linear-gradient(135deg, #00f2fe 0%, #4facfe 35%, #a855f7 70%, #ec4899 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Neon Glow Accents */
+.glow-cyan {
+  box-shadow: 0 0 25px rgba(0, 242, 254, 0.35);
+}
+
+.glow-purple {
+  box-shadow: 0 0 25px rgba(168, 85, 247, 0.35);
+}
+
+/* Interactive Buttons */
+.btn-primary {
+  background: linear-gradient(135deg, #00f2fe 0%, #0284c7 100%);
+  color: #050b14;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 20px rgba(0, 242, 254, 0.5);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(0, 242, 254, 0.3);
+  color: #f1f5f9;
+  font-weight: 500;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 242, 254, 0.1);
+  border-color: #00f2fe;
+  color: #00f2fe;
+  transform: translateY(-2px);
+}
+
+/* Ambient Radial Glow Backgrounds */
+.ambient-glow-cyan {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(0, 242, 254, 0.12) 0%, rgba(0, 242, 254, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.ambient-glow-purple {
+  position: absolute;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.1) 0%, rgba(168, 85, 247, 0) 70%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+/* Timeline Vertical Pulse Line */
+.timeline-line-animated {
+  background: linear-gradient(180deg, #00f2fe 0%, #a855f7 50%, #ec4899 100%);
+  box-shadow: 0 0 15px rgba(0, 242, 254, 0.4);
+}
+
+/* Floating Animation */
+@keyframes softFloat {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.animate-soft-float {
+  animation: softFloat 5s ease-in-out infinite;
+}
+
+/* Shimmer effect for borders */
+@keyframes borderRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.animated-border-box {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.animated-border-box::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: conic-gradient(transparent, #00f2fe, transparent 30%, #a855f7, transparent 60%);
+  animation: borderRotate 8s linear infinite;
+  z-index: -1;
+}
