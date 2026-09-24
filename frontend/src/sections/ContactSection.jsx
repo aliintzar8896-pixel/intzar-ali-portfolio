@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Send, Mail, MapPin, CheckCircle2, AlertCircle, Github, Linkedin, Instagram, Loader2, Sparkles } from 'lucide-react';
 import SectionHeader from '../components/SectionHeader';
 import { personalInfo, socialLinks } from '../data/profile';
+import { contactAnimation } from '../utils/animations';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -15,6 +16,21 @@ export default function ContactSection() {
     success: false,
     error: null,
   });
+
+  const sectionRef = useRef(null);
+  const infoColRef = useRef(null);
+  const formColRef = useRef(null);
+
+  useEffect(() => {
+    const ctx = contactAnimation(sectionRef, {
+      infoCol: infoColRef.current,
+      formCol: formColRef.current,
+    });
+
+    return () => {
+      if (ctx) ctx.revert();
+    };
+  }, []);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -59,7 +75,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="py-20 md:py-28 relative">
+    <section id="contact" ref={sectionRef} className="py-20 md:py-28 relative">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           badge="Get in Touch"
@@ -70,7 +86,7 @@ export default function ContactSection() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Left Column: Direct Info & Social Cards (5 cols) */}
-          <div className="lg:col-span-5 space-y-6">
+          <div ref={infoColRef} className="lg:col-span-5 space-y-6">
             <div className="glass-card p-6 sm:p-8 rounded-3xl border border-white/10 space-y-6">
               <h3 className="text-xl font-bold text-white flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-cyan-400" />
@@ -148,7 +164,7 @@ export default function ContactSection() {
           </div>
 
           {/* Right Column: Contact Form (7 cols) */}
-          <div className="lg:col-span-7">
+          <div ref={formColRef} className="lg:col-span-7">
             <div className="glass-card p-6 sm:p-8 lg:p-10 rounded-3xl border border-white/10 hover:border-cyan-500/30 transition-all duration-300">
               <h3 className="text-2xl font-bold text-white mb-2">Send a Direct Message</h3>
               <p className="text-slate-400 text-sm mb-6">

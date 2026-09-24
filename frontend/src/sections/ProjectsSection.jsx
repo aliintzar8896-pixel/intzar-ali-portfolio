@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { ExternalLink, Github, Layers, ArrowUpRight, CheckCircle2, Eye, X, Image as ImageIcon } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { ExternalLink, Github, Layers, ArrowUpRight, CheckCircle2, Eye, X, Image as ImageIcon, Sparkles } from 'lucide-react';
 import SectionHeader from '../components/SectionHeader';
 import { projectsData } from '../data/profile';
+import { projectAnimation } from '../utils/animations';
 
 // Import local images directly for reliable Vite bundling
 import motorDoctorCover from '../assets/motor-doctor/Screenshot 2026-09-15 225336.png';
@@ -9,6 +10,7 @@ import motorDoctorArch from '../assets/motor-doctor/arch_diagram_motor_doctor.pn
 import motorDoctorDfd from '../assets/motor-doctor/dfd_diagram_motor_doctor.png';
 import motorDoctorScreen2 from '../assets/motor-doctor/Screenshot 2026-09-15 225408.png';
 import jobPortalCover from '../assets/job-portal/job-portal-preview.svg';
+import portfolioCover from '../assets/portfolio-preview.svg';
 
 const projectImages = {
   'motor-doctor': {
@@ -19,11 +21,29 @@ const projectImages = {
     cover: jobPortalCover,
     gallery: [jobPortalCover],
   },
+  'portfolio': {
+    cover: portfolioCover,
+    gallery: [portfolioCover],
+  },
 };
 
 export default function ProjectsSection() {
   const [activeModalProject, setActiveModalProject] = useState(null);
   const [activeGalleryIndex, setActiveGalleryIndex] = useState(0);
+
+  const sectionRef = useRef(null);
+  const cardsRef = useRef([]);
+
+  useEffect(() => {
+    const validCards = cardsRef.current.filter(Boolean);
+    const ctx = projectAnimation(sectionRef, {
+      cards: validCards,
+    });
+
+    return () => {
+      if (ctx) ctx.revert();
+    };
+  }, []);
 
   const openGallery = (project, index = 0) => {
     setActiveModalProject(project);
@@ -36,13 +56,13 @@ export default function ProjectsSection() {
   };
 
   return (
-    <section id="projects" className="py-20 md:py-28 relative bg-dark-850/40">
+    <section id="projects" ref={sectionRef} className="py-20 md:py-28 relative bg-dark-850/40">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
           badge="Featured Work"
           title="Engineered Projects &"
           highlight="Solutions"
-          subtitle="Real-world applications solving tangible challenges in automotive assistance and career recruitment, backed by scalable code architectures."
+          subtitle="Real-world applications solving tangible challenges in automotive assistance, recruitment portals, and cinematic web design."
         />
 
         {/* Project Cards Grid */}
@@ -54,14 +74,15 @@ export default function ProjectsSection() {
             return (
               <div
                 key={project.id}
-                className="glass-card rounded-3xl border border-white/10 hover:border-cyan-500/30 overflow-hidden transition-all duration-500 group"
+                ref={(el) => (cardsRef.current[idx] = el)}
+                className="project-card glass-card rounded-3xl border border-white/10 hover:border-cyan-500/30 overflow-hidden transition-all duration-500 group"
               >
                 <div className={`grid grid-cols-1 lg:grid-cols-12 gap-8 items-center p-6 sm:p-8 lg:p-10 ${
                   isEven ? '' : 'lg:flex-row-reverse'
                 }`}>
                   
                   {/* Left (or Right) Content Column (6 cols) */}
-                  <div className={`lg:col-span-6 space-y-6 ${isEven ? '' : 'lg:order-2'}`}>
+                  <div className={`project-content-wrap lg:col-span-6 space-y-6 ${isEven ? '' : 'lg:order-2'}`}>
                     
                     {/* Badge & Category */}
                     <div className="flex flex-wrap items-center gap-2.5">
@@ -103,7 +124,7 @@ export default function ProjectsSection() {
                       {project.techStack.map((tech) => (
                         <span
                           key={tech}
-                          className="px-3 py-1 rounded-lg text-xs font-mono font-medium bg-white/5 text-slate-300 border border-white/10"
+                          className="px-3 py-1 rounded-lg text-xs font-mono font-medium bg-white/5 text-slate-300 border border-white/10 group-hover:border-white/20 transition-colors"
                         >
                           {tech}
                         </span>
@@ -153,7 +174,7 @@ export default function ProjectsSection() {
                   <div className={`lg:col-span-6 ${isEven ? '' : 'lg:order-1'}`}>
                     <div
                       onClick={() => openGallery(project, 0)}
-                      className="relative rounded-2xl overflow-hidden bg-dark-900 border border-white/10 group/img cursor-pointer shadow-2xl transition-transform duration-500 hover:scale-[1.02]"
+                      className="project-img-wrap relative rounded-2xl overflow-hidden bg-dark-900 border border-white/10 group/img cursor-pointer shadow-2xl transition-all duration-500 hover:scale-[1.02]"
                     >
                       {/* Browser Mockup Top Bar */}
                       <div className="px-4 py-3 bg-dark-850 border-b border-white/5 flex items-center justify-between">
@@ -163,7 +184,11 @@ export default function ProjectsSection() {
                           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/80" />
                         </div>
                         <div className="text-[11px] font-mono text-slate-500 truncate max-w-[200px]">
-                          {project.id === 'motor-doctor' ? 'motor-doctor.live' : 'jobsphere.dev'}
+                          {project.id === 'motor-doctor'
+                            ? 'motor-doctor.live'
+                            : project.id === 'job-portal'
+                            ? 'jobsphere.dev'
+                            : 'intzar-portfolio.dev'}
                         </div>
                         <Eye className="w-3.5 h-3.5 text-slate-500 group-hover/img:text-cyan-400 transition-colors" />
                       </div>

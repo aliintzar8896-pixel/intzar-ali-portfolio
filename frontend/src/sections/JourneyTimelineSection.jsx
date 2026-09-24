@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { Calendar, GraduationCap, Award, MapPin, CheckCircle, ArrowRight, Sparkles, BookOpen, School } from 'lucide-react';
 import SectionHeader from '../components/SectionHeader';
 import { educationTimeline } from '../data/profile';
+import { timelineAnimation } from '../utils/animations';
 
 export default function JourneyTimelineSection() {
+  const sectionRef = useRef(null);
+  const lineRef = useRef(null);
+  const milestoneBarRef = useRef(null);
+  const entriesRef = useRef([]);
+
+  useEffect(() => {
+    const validEntries = entriesRef.current.filter(Boolean);
+
+    const ctx = timelineAnimation(sectionRef, {
+      line: lineRef.current,
+      milestoneBar: milestoneBarRef.current,
+      entries: validEntries,
+    });
+
+    return () => {
+      if (ctx) ctx.revert();
+    };
+  }, []);
+
   return (
-    <section id="journey" className="py-20 md:py-28 relative overflow-hidden bg-dark-850/40">
+    <section id="journey" ref={sectionRef} className="py-20 md:py-28 relative overflow-hidden bg-dark-850/40">
       {/* Background ambient lighting */}
-      <div className="ambient-glow-purple top-1/3 -right-40" />
-      <div className="ambient-glow-cyan bottom-10 -left-40" />
+      <div className="ambient-glow-purple top-1/3 -right-40 pointer-events-none" />
+      <div className="ambient-glow-cyan bottom-10 -left-40 pointer-events-none" />
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <SectionHeader
@@ -19,7 +39,10 @@ export default function JourneyTimelineSection() {
         />
 
         {/* Milestone Steps Bar (Horizontal Overview) */}
-        <div className="mb-16 hidden md:flex items-center justify-between p-4 rounded-2xl glass-card border border-white/10">
+        <div
+          ref={milestoneBarRef}
+          className="mb-16 hidden md:flex items-center justify-between p-4 rounded-2xl glass-card border border-white/10"
+        >
           <div className="flex items-center gap-3">
             <span className="w-8 h-8 rounded-lg bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-xs font-mono font-bold text-cyan-400">2020</span>
             <span className="text-xs font-medium text-slate-300">High School (73.67%)</span>
@@ -43,8 +66,11 @@ export default function JourneyTimelineSection() {
 
         {/* Vertical Timeline */}
         <div className="relative">
-          {/* Central Vertical Connecting Line */}
-          <div className="absolute left-4 md:left-1/2 top-0 bottom-0 w-0.5 -translate-x-1/2 timeline-line-animated" />
+          {/* Central Vertical Connecting Line with GSAP Scrub Draw */}
+          <div
+            ref={lineRef}
+            className="absolute left-4 md:left-1/2 top-0 bottom-0 w-1 -translate-x-1/2 bg-gradient-to-b from-cyan-400 via-blue-500 to-purple-600 rounded-full shadow-[0_0_12px_rgba(0,242,254,0.5)] origin-top"
+          />
 
           <div className="space-y-12">
             {educationTimeline.map((item, index) => {
@@ -54,12 +80,13 @@ export default function JourneyTimelineSection() {
               return (
                 <div
                   key={index}
-                  className={`relative flex flex-col md:flex-row items-start md:items-center ${
+                  ref={(el) => (entriesRef.current[index] = el)}
+                  className={`timeline-entry relative flex flex-col md:flex-row items-start md:items-center ${
                     isEven ? 'md:flex-row-reverse' : ''
                   }`}
                 >
                   {/* Center Node Dot */}
-                  <div className="absolute left-4 md:left-1/2 -translate-x-1/2 z-20 flex items-center justify-center">
+                  <div className="timeline-node absolute left-4 md:left-1/2 -translate-x-1/2 z-20 flex items-center justify-center">
                     <div
                       className={`w-9 h-9 rounded-full flex items-center justify-center border-2 transition-transform duration-300 hover:scale-125 ${
                         isCurrent
@@ -82,7 +109,7 @@ export default function JourneyTimelineSection() {
                     } w-full`}
                   >
                     <div
-                      className={`glass-card p-6 rounded-2xl border transition-all duration-300 group hover:-translate-y-1 ${
+                      className={`timeline-card glass-card p-6 rounded-2xl border transition-all duration-300 group hover:-translate-y-1 ${
                         isCurrent
                           ? 'border-purple-500/40 glass-card-glow-purple bg-purple-950/20'
                           : 'border-white/10 hover:border-cyan-500/30'
@@ -94,7 +121,7 @@ export default function JourneyTimelineSection() {
                           isEven ? 'md:justify-end' : 'justify-start'
                         }`}
                       >
-                        <span className="px-3 py-1 rounded-full text-xs font-mono font-bold bg-white/10 text-cyan-300 border border-cyan-500/30">
+                        <span className="timeline-year px-3 py-1 rounded-full text-xs font-mono font-bold bg-white/10 text-cyan-300 border border-cyan-500/30">
                           {item.year}
                         </span>
                         <span
